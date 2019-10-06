@@ -1,0 +1,45 @@
+#Genetik Algoritma
+#Genetik Algoritma ile Sırt Çantası Problemi
+
+#Sınırlandırılmış Optimizasyon ile konuyu ele alalım.
+#Genetik Algoritma permütasyon tabanlı olup, kısıtlar altında (yakınsama kriteri) olasılıklar üzerinden arama yaparak global minimum noktası, çözüm noktası/noktaları aranır ve problem çözülür.
+#Bu örnekte bir askeri ya da bir dağcıyı düşünelim.
+#Bu kişi sırt çantasında bazı eşyaları/aletleri taşıyor olsun.
+#Bazı aletler çok ağırken, bazıları çok hafif ama her aletin önemi bir değil. Her insanın taşıyabileceği bir ağırlık var.
+#Bu ağırlık kısıtı altında, çok sayıda ve önemli aletleri yanına almak zorunda.
+#Bir dağcı yanına önemli aletleri almak istiyor fakat o kişi en fazla çantasında 15 kilogram taşıyabiliyor.
+#Örneğimiz böyle bir problem olsun.
+#Bu problemi Genetik Algoritma (GA) kullanarak permütasyonlarla R programına kodlayalım ve çözelim.
+
+#Örnek içinde 7 adet aletimiz var.
+#Bu aletlerin önem düzeyi sırasıyla, (8,7,10,11,8,9,5) şeklindedir.
+#Bu aletlerin ağırlıkları (kg) sırasıyla, (3,2,7,6,4,10,3) şeklindedir.
+#Çanta ile taşınabilecek bir ağırlık kısıtımız mevcut o da 15(kg).
+#Şimdi bu durumu programa kodlayalım.
+
+#Kütüphanelerimiz yüklü değilse indirelim ardından kuralım. 
+install.packages(c("datasets","GA"))
+library (datasets)
+library(GA)
+
+onem <- c (8,7,10,11,8,9,5)
+agirlik <- c (3,2,7,6,4,10,3)
+agirlik_kisiti<-15
+
+kapasite<- function(x){
+  c = sum(x * onem)
+  penalty = sum(agirlik) * abs(sum(x * agirlik) - agirlik_kisiti)
+  c - penalty
+}
+
+model <- ga (type="binary",
+             fitness=kapasite,
+             popSize=20,
+             nBits=length(agirlik),
+             run = 200,
+             maxiter = 1000)
+
+summary(model)
+
+#Çıktıda da görüldüğü üzere Iterations kısmında Genetik Algoritmanın kaç döngüde bulduğu ve global çözüm noktalarımız şu şekilde:
+#Dağcının ağırlık kısıtı altında yanına alabileceği ve maksimum fayda sağlayabileceği aletler; 1. Alet, 2. Alet, 4. Alet ve 5. Alettir.
